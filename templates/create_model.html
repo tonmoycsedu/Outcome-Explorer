@@ -4,71 +4,41 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-lg-2 ui segment">
-			<!-- <form> -->
-			  <div class="form-group">
-			    <label for="file-upload">Upload Data</label>
-			    <input type="file" class="form-control-file" id="file-upload">
-			  </div>
-			  <hr>
-			  <div class="div_scroll small">
-			  	<h4>Attributes</h4>
-			  	<ul id="attribute_list" class="list_group" style="padding-inline-start: 0px;"></ul>
-			  	
-			  </div>
-			  <hr>
-			  <div>
-			  	<a name="selector" class="sem_controls" href="#">
-			  		<img class="sem_image" src="{{ url_for('static', filename='images/selector1.png') }}">	
-			  	</a>
-			  	<a name="observed" class="sem_controls" href="#">
-			  		<img class="sem_image" src="{{ url_for('static', filename='images/rectangle.png') }}">	
-			  	</a>
-			  	<a name="latent" class="sem_controls" href="#">
-			  		<img class="sem_image" src="{{ url_for('static', filename='images/oval.png') }}">
-			  	</a>
-			  	
-			  	<a name="edge" class="sem_controls" href="#">
-			  		<img class="sem_image small" src="{{ url_for('static', filename='images/arrow.png') }}">
-			  	</a>
-			  	<a name="edge_bid" class="sem_controls" href="#">
-			  		<img class="sem_image small" src="{{ url_for('static', filename='images/arrow_bid1.png') }}">
-			  	</a>
-			  	<a name="error" class="sem_controls" href="#">
-			  		<img class="sem_image" src="{{ url_for('static', filename='images/circle.png') }}">
-			  	</a>
-			  </div>
-			  <hr>
-			  <div class="div_scroll small">
-			  	<h4>Define Model</h4>
-			  	<textarea id="define_model" class="form-control" rows="6"></textarea>	
-			  	<a id="update_visual" href="#">Update Visual Model</a>
-			  </div>
-			  <hr>
-			  <button id="efa" type="button" class="btn btn-outline-primary">Start EFA</button>
-			  <button id="run" type="button" class="btn btn-outline-primary">Run Model</button>
-			  <button id="save_model" type="button" class="btn btn-outline-success" style="margin-top: 10px;">Save Model</button>
-			<!-- </form> -->
+			<button id="get_started_button" type="button" class="btn btn-primary">Get Started!</button>
+			<hr>
+			<div>
+			<a name="selector" class="sem_controls" href="#">
+				<img class="sem_image" src="{{ url_for('static', filename='images/selector1.png') }}">	
+			</a>
+			<a name="observed" class="sem_controls" href="#">
+				<img class="sem_image" src="{{ url_for('static', filename='images/rectangle.png') }}">	
+			</a>
+			<a name="latent" class="sem_controls" href="#">
+				<img class="sem_image" src="{{ url_for('static', filename='images/oval.png') }}">
+			</a>
+			
+			<a name="edge" class="sem_controls" href="#">
+				<img class="sem_image small" src="{{ url_for('static', filename='images/arrow.png') }}">
+			</a>
+			<a name="edge_bid" class="sem_controls" href="#">
+				<img class="sem_image small" src="{{ url_for('static', filename='images/arrow_bid1.png') }}">
+			</a>
+			<a name="error" class="sem_controls" href="#">
+				<img class="sem_image" src="{{ url_for('static', filename='images/circle.png') }}">
+			</a>
+			</div>
+			<hr>
+			<div class="div_scroll small">
+			<h4>Define Model</h4>
+			<textarea id="define_model" class="form-control" rows="6"></textarea>	
+			<a id="update_visual" href="#">Update Visual Model</a>
+			</div>
+			<hr>
+			
+			<button id="save_model" type="button" class="btn btn-outline-success">Save Model</button>
 		</div>
 		<div id="middle_section" class="col-lg-6">
-			<!-- <svg id="model" style="height: 500px">
-				<g id="pathSVG"></g>
-				<g id="contentSVG"></g>
-			</svg> -->	
-			<!-- <hr> -->
-			<div style="height:500px;">
-				<div id="search_attributes" style="margin-bottom: 10px"></div>	
-	  			<span class="search_opt" style="margin-right: 50px; display: none "><a id="selectAll_search" href="#">Select All</a></span>
-				<!-- <span style="margin-right: 20px; "><input type="checkbox" name=""> Use Defined Factors</span> -->
-				<span class="search_opt" style="margin-right: 50px; display: none ">
-					Select Algorithm:
-					<select id="pycausal_algo">
-						<option value="pc-all">PC</option>
-						<option value="fci">FCI</option>
-						<option value="rfci">RFCI</option>
-						<option value="gfci">GFCI</option>
-					</select>	
-				</span>
-				<span class="search_opt" style="display: none"> <a id="search_dag" href="#">Search Causal DAG</a></span>
+			<div>
 				<div id="searchSVG" style="height: 600px">
 				</div>
 				<div id="searchControl">
@@ -83,7 +53,6 @@
 					<a id="remove" href="#" style="margin-right: 10px">Remove</a>
 					<a id="reverse" href="#" style="margin-right: 10px">Reverse</a>
 				</div>
-				
 			</div>
 		</div>
 		
@@ -120,29 +89,45 @@
 			</div>	
 		</div>
 	</div>
-	<div id="efa_modal" class="ui large modal">
-	  	<div class="header">Exploratory Factor Analysis</div>
+	<div id="get_started_modal" class="ui large modal">
+	  	<div class="header">Define Your Causal Model</div>
 	  	<div class="scrolling content">
-	  		<div class="">
-	  			<h4>Select Variables: </h4>
-	  			<div id="efa_attributes"></div>	
-	  			<a id="selectAll" href="#">Select All</a>
-	  			
+	  		<div>
+	  			<h3>Step 1</h3>
+				<div class="form-group">
+					<label for="file-upload">Upload Your Dataset (.csv file)</label>
+					<input type="file" class="form-control-file" id="file-upload">
+				</div>
+				<hr>
+				<h3>Step 2</h3>
+				<div class="form-group">
+					<p>Select Target Variable</p>
+					<p>Which variable do you want to use as the outcome?</p>
+					<ul id="attribute_list" class="list_group" style="padding-inline-start: 0px;"></ul>	
+				</div>
+				<hr>
+				<div class="form-group">
+					<label for="causal_structure">Upload Causal Structure (.txt file)</label>
+					<input type="file" class="form-control-file" id="causal_structure">
+				</div>
 	  		</div>
 	  		<br>
-	  		<button id="run_efa" type="button" class="btn btn-outline-primary">Run EFA</button>
-	  		<div id="scree_plot"></div>
-	  		<div id="loadings"></div>
-	  		<div id="variance"></div>
+	  		<button id="run" type="button" class="btn btn-outline-primary">Run Model</button>
 	  	</div>
-	  	
+		<div id="save_model_modal" class="ui large modal">
+			<div class="header">Save Your Model</div>
+			<div class="scrolling content">
+				<div>
+					<h3>Name the file</h3>
+					<div class="form-group">
+						<input type="text" id="save_file_name">
+					</div>
+				</div>
+				<br>
+				<button id="final_save" type="button" class="btn btn-primary">Save Model</button>
+		</div>
 	</div>
 </div>
-<!-- <div id="tooltip" style="opacity:0;width: 200px">
-	<ul id="tooltip_list" class="list_group"></ul>
-</div> -->
-<script type="text/javascript"> var baseline= false</script>
-
 <script type = "text/javascript" src="{{ url_for('static', filename='vendor/jquery/jquery-3.3.1.min.js') }}"></script>
 <script type = "text/javascript" src="{{ url_for('static', filename='vendor/popper.min.js') }}"></script>
 <script type = "text/javascript" src="{{ url_for('static', filename='vendor/bootstrap.min.js') }}"></script>

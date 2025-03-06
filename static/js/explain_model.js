@@ -79,20 +79,14 @@ window.onload = function(){
         
     stepSizes = {"CRIME_RATE":"0.01","NITRIC_OXIDE":".001","ROOM_PER_DWELLING":"0.01","PERCENTAGE_OLD_HOUSE":"0.01",
                     "DISTANCE_FROM_CITY":"0.01","ACCESSIBILTY_TO_HWY":"0.01","PROPERTY_TAX":"0.01",
-                    "LOWER_STATUS_POP":"1","INDUSTRIALIZATION":"0.1","PUPIL_TEACHER_RATIO":"0.1"}   
-
-    // selected_attrs = ["Pregnancies","Glucose","BloodPressure","SkinThickness",
-    //                 "Insulin","BMI","DiabetesPedigreeFunction","Age","hasDiabetes"]    
-    // stepSizes = {"Pregnancies":"1","Glucose":".001","BloodPressure":"0.01","SkinThickness":"0.01",
-    //                 "Insulin":"0.01","BMI":"0.01","DiabetesPedigreeFunction":"0.01",
-    //                 "Age":"1"}    
+                    "LOWER_STATUS_POP":"1","INDUSTRIALIZATION":"0.1","PUPIL_TEACHER_RATIO":"0.1"} 
         
     $.ajax({
         url: '/see_model',
         data: JSON.stringify({pdag_load:active_model,attrs:selected_attrs,target:target_name,model_type:model_type}),
         type: 'POST',
         success: function(response){
-            // console.log(response);
+            console.log(response);
             persona_list = response.rows
             load_dag()
             update_network(JSON.parse(response.model));  
@@ -141,6 +135,7 @@ $('body').on("change", '.dd', function(){
 
 
 $('#update').on('click',function(){
+    console.log(active_model)
     $.ajax({
         url: '/show_dag',
         data: JSON.stringify({pdag:active_model,attrs:selected_attrs,target:target_name,model_type:model_type}),
@@ -289,6 +284,7 @@ function get_scatterplot_data( val,num_of_points=false){
 function update_network(response_model){
     selected_paths = []
     active_model = response_model
+    console.log(active_model)
     
     targetId = find_nodeId(target_name)
     // console.log(active_model,targetId)

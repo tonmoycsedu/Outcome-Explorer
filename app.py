@@ -13,6 +13,7 @@ from sklearn.mixture import GaussianMixture
 from joblib import dump, load
 from semopy import Model
 from semopy import stats
+import pydot
 
 # global variables
 global df, target, loc;
@@ -33,87 +34,53 @@ def home():
 def create_model():
 	return render_template("create_model.html",title = "Create Model")
 
-###default route, home page
-@app.route("/explain_model/<l>/<t>", methods=['POST', 'GET'])   
-def explain_model(l, t):
+#explain model
+@app.route("/explain_model/<data_file>/<target_variable>/<dag_file>", methods=['POST', 'GET'])   
+def explain_model(data_file, target_variable, dag_file):
 	global loc
 	global target
-	loc = "./static/csv/"+ l
-	target = t
+	loc = "./static/csv/"+ data_file + ".csv"
+	target = target_variable
 	data = pd.read_csv(loc)
 	return render_template("explain_model.html", title = "Interpret Model", attrs= data.columns.tolist())
 
-@app.route("/save_dag",methods=['POST'])   
-def save_dag():
-	if request.method == 'POST':
-		json_data = request.get_json(force=True);		
-		pdag = json_data['pdag']
-
-		with open('data.json', 'w') as fp:
-			json.dump(pdag,fp)
-			# fp.close()
-		return jsonify(msg="success")
-
-@app.route("/load_dag",methods=['POST'])   
-def load_dag():
-	if request.method == 'POST':
-		with open('./static/models/admission_model2.json') as f:
-			pdag = json.load(f)
-			pdag = pc.PDAG.from_obj(pdag)
-	return jsonify(msg="success", model= pdag.to_json())
-
-###default route, home page
-@app.route("/save_csv")   
-def save_csv():
-	data = pd.read_csv(loc)
-	print(data.columns)
-	dtypes = dict()
-	for attr in data.columns:
-		new_attr = attr.replace("%","").replace("-","_").replace(" ","_")
-		dtypes[new_attr]='num'
-
-	data.columns = [key for key in dtypes]
-	data.to_csv('./static/csv/loan_data2.csv',index=False)
-	return "hello"
-
-#### read the csv data to a pandas dataframe
+##################################  Create Model ###################################
+# read the csv data to a pandas dataframe
 @app.route("/read_csv", methods=['POST']) 
 def read_csv():
 	if request.method == 'POST':
 		global df
 		csv_file = request.get_json(force=True);		
 		df = pd.read_csv(StringIO(csv_file['content']))
-		# scaler = StandardScaler()
-		# X = scaler.fit_transform(df.values)
-		# df = pd.DataFrame(X,columns=df.columns)
-		# session['data'] = df.copy()
 		return jsonify(msg="success",attributes=list(df.columns))
 
+# read the causal structure from a txt file
+@app.route("/upload_dag",methods=['POST'])
+def upload_dag():
+	graph = pydot.Dot(graph_type='digraph',ranksep=2,nodesep=0.1)
+	if request.method == 'POST':
+		json_data = request.get_json(force=True);		
+		f = StringIO(json_data['content'])
+		edges = []
+		for edge in f:
+			edges.append(edge)
+			if "---" in edge:
+				spl = edge.split("---")
+				src = spl[0].strip()
+				target = spl[1].strip()
+				edge = pydot.Edge(src,target,dir="none")
+			elif "-->" in edge:
+				spl = edge.split("-->")
+				src = spl[0].strip()
+				target = spl[1].strip()
+				edge = pydot.Edge(src,target,dir="forward")
+			graph.add_edge(edge)
 
-@app.route("/save_model", methods=['POST'])
-def save_model():
-	json_data = request.get_json(force=True)     
-	mod = json_data['model']
-	with open('static/models/current_model.json', 'w') as fp:
-		json.dump(mod, fp,indent=4)
-	return jsonify(msg="success")
+	dot_str = graph.to_string()
 
+	return jsonify(msg="success",edges=edges, dot_str = dot_str)
 
-
-@app.route("/baseline")   
-def baseline():
-	data = pd.read_csv(loc)
-	print(data.columns)
-	return render_template("baseline.html",title = "Simple Prediction", attrs= data.columns.tolist())
-
-###default route, home page
-@app.route("/interaction")   
-def interaction():
-	data = pd.read_csv(loc)
-	print(data.columns)
-	return render_template("interaction.html",title = "Plug and Play", attrs= data.columns.tolist())
-
-### correlation between two attributes
+# parameterize the model. Essentially regression
 @app.route("/sem_fit",methods=['POST'])
 def sem_fit():  
 	global df
@@ -123,13 +90,6 @@ def sem_fit():
 	scaler = StandardScaler()
 	X = scaler.fit_transform(df)
 	df_scaled = pd.DataFrame(X,columns = df.columns)
-	# print(df_scaled.head())
-	# mod = ''""" # measurement part
- #            acad_skill =~ cgpa + lor + sop +research
- #            test_skill =~ gre + toefl
- #            admit ~ acad_skill + test_skill
- #            # exogenous variances
- #      """''
 	model = Model(mod,mimic_lavaan=True)
 	model.fit(df_scaled)
 	fit_indices = ['dof','chi2','rmsea','cfi','gfi','agfi','aic','bic']
@@ -172,45 +132,115 @@ def sem_fit():
 	return jsonify(msg="succcess",fit= model.inspect().to_dict("index"),measures= fit_measures, \
 			 prediction=[df.tail(100)[target].tolist(),pred],coeffs=d)
 
-@app.route("/causal_search",methods=['POST'])
-def causal_search():
-	# from pycausal.pycausal import pycausal as pc
-	# pc = pc()
-	# pc.start_vm() 
-	# from pycausal import search as s
-	# tetrad = s.tetradrunner()
+# save the parameterized model
+@app.route("/save_model", methods=['POST'])
+def save_model():
+	json_data = request.get_json(force=True)     
+	mod = json_data['model']
+	filename = json_data['filename']
+	with open('./static/data/'+filename+'.json', 'w') as fp:
+		json.dump(mod, fp,indent=4)
+	return jsonify(msg="success")
 
-	# global df
-	# json_data = request.get_json(force=True)     
-	# attrs= json_data['attrs']
-	# algo= json_data['algo']
-	# d = df[attrs]
-	# # print(d.columns)
-	# tetrad.run(algoId = algo, dfs = d)
-	import pydot
-	graph = pydot.Dot(graph_type='digraph',ranksep=2,nodesep=0.1)
-	with open('./static/other/boston_structure.txt') as f:
-		edges = []
-		for edge in f:
-			edges.append(edge)
-			if "---" in edge:
-				spl = edge.split("---")
-				src = spl[0].strip()
-				target = spl[1].strip()
-				edge = pydot.Edge(src,target,dir="none")
-			elif "-->" in edge:
-				spl = edge.split("-->")
-				src = spl[0].strip()
-				target = spl[1].strip()
-				edge = pydot.Edge(src,target,dir="forward")
-			graph.add_edge(edge)
+##################################  End of Create Model ###################################
 
-	# # print(graph.to_string())
-	dot_str = graph.to_string()
-	# dot_str = pc.tetradGraphToDot(tetrad.getTetradGraph())
-	# print(tetrad.getTetradGraph())
+##################################  Explain Model ###################################
+@app.route("/see_model",methods=['POST'])   
+def see_model():
+	if request.method == 'POST':
+		global df
+		global loc
+		global target
+		json_data = request.get_json(force=True);		
+		attrs = json_data['attrs']
+		target = json_data['target']
+		model_type = json_data['model_type']
+		data = pd.read_csv(loc)
+		# print("data length: ",len(data))
+		# .sample(n=700)
+		df_copy = data.copy()
+		data= data[attrs]
+		scaler = StandardScaler()
 
-	return jsonify(msg="success",edges=edges, dot_str = dot_str)
+		# gmm = GaussianMixture(n_components = 4)
+		# gmm.fit(scaler.fit_transform(data))
+		# # print(gmm.means_)
+		# dump(gmm, './static/models/mixture_model_all.joblib')
+
+		if('pdag_load' in json_data):
+			with open('./static/data/boston.json') as f:
+				pdag = json.load(f)
+				# pdag = json.dumps(pdag).to_json()
+
+			mx = data.max()
+			mn = data.min()
+			mean = data.mean()
+			std = data.std()
+			for node in pdag['nodes']:
+				# print(node)
+				if(node['data_type'] != "Latent"):
+					node['max'] = mx[node['name']]
+					node['min'] = mn[node['name']]
+					node['mean'] = mean[node['name']]
+					node['std'] = std[node['name']]
+
+		if(model_type == 'regression'): 
+			sampled = df_copy[['Key',target]].sample(frac=1).head(100)
+			indices = sampled.index.values.tolist()
+			# print(sampled)
+			return jsonify(msg="success",model= json.dumps(pdag), \
+				indices= sampled.index.values.tolist(), \
+				keys= sampled['Key'].tolist(), classes= sampled[target].tolist(), \
+				rows = data.loc[indices].to_dict('index'))
+
+@app.route("/save_dag",methods=['POST'])   
+def save_dag():
+	if request.method == 'POST':
+		json_data = request.get_json(force=True);		
+		pdag = json_data['pdag']
+
+		with open('data.json', 'w') as fp:
+			json.dump(pdag,fp)
+			# fp.close()
+		return jsonify(msg="success")
+
+@app.route("/load_dag",methods=['POST'])   
+def load_dag():
+	if request.method == 'POST':
+		with open('./static/models/admission_model2.json') as f:
+			pdag = json.load(f)
+			pdag = pc.PDAG.from_obj(pdag)
+	return jsonify(msg="success", model= pdag.to_json())
+
+###default route, home page
+@app.route("/save_csv")   
+def save_csv():
+	data = pd.read_csv(loc)
+	print(data.columns)
+	dtypes = dict()
+	for attr in data.columns:
+		new_attr = attr.replace("%","").replace("-","_").replace(" ","_")
+		dtypes[new_attr]='num'
+
+	data.columns = [key for key in dtypes]
+	data.to_csv('./static/csv/loan_data2.csv',index=False)
+	return "hello"
+
+
+
+@app.route("/baseline")   
+def baseline():
+	data = pd.read_csv(loc)
+	print(data.columns)
+	return render_template("baseline.html",title = "Simple Prediction", attrs= data.columns.tolist())
+
+###default route, home page
+@app.route("/interaction")   
+def interaction():
+	data = pd.read_csv(loc)
+	print(data.columns)
+	return render_template("interaction.html",title = "Plug and Play", attrs= data.columns.tolist())
+
 
 @app.route("/get_dot_string",methods=["POST"])
 def get_dot_string():
@@ -297,57 +327,6 @@ def feasibility():
 			return jsonify(val=np.max(probs))
 		else:
 			return jsonify(val=probs[0][category])
-
-@app.route("/see_model",methods=['POST'])   
-def see_model():
-	if request.method == 'POST':
-		global df
-		json_data = request.get_json(force=True);		
-		attrs = json_data['attrs']
-		target = json_data['target']
-		model_type = json_data['model_type']
-		data = pd.read_csv(loc)
-		print("data length: ",len(data))
-		# .sample(n=700)
-		df_copy = data.copy()
-		data= data[attrs]
-		scaler = StandardScaler()
-		# gmm = GaussianMixture(n_components = 3)
-		# gmm.fit(scaler.fit_transform(data.drop(["research","admit"],axis=1)))
-		# # print(gmm.means_)
-		# dump(gmm, 'mixture_model.joblib') 
-
-		# gmm = GaussianMixture(n_components = 4)
-		# gmm.fit(scaler.fit_transform(data))
-		# # print(gmm.means_)
-		# dump(gmm, './static/models/mixture_model_all.joblib')
-
-		if('pdag_load' in json_data):
-			print("dukhse")
-			with open('./static/models/housing_model1.json') as f:
-				pdag = json.load(f)
-				# pdag = json.dumps(pdag).to_json()
-
-			mx = data.max()
-			mn = data.min()
-			mean = data.mean()
-			std = data.std()
-			for node in pdag['nodes']:
-				# print(node)
-				if(node['data_type'] != "Latent"):
-					node['max'] = mx[node['name']]
-					node['min'] = mn[node['name']]
-					node['mean'] = mean[node['name']]
-					node['std'] = std[node['name']]
-
-		if(model_type == 'regression'): 
-			sampled = df_copy[['Key',target]].sample(frac=1).head(100)
-			indices = sampled.index.values.tolist()
-			# print(sampled)
-			return jsonify(msg="success",model= json.dumps(pdag), \
-				indices= sampled.index.values.tolist(), \
-				keys= sampled['Key'].tolist(), classes= sampled[target].tolist(), \
-				rows = data.loc[indices].to_dict('index'))
 		
 @app.route("/get_row",methods=['POST'])
 def get_row():

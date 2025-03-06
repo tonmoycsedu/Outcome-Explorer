@@ -337,21 +337,7 @@ function print_estimates(estimates){
 			$("#model_fit_body").append("<td>"+r[k]+"</td>")
 
 		})
-		$("#model_fit_body").append("</tr>")
-		// if(r.op == "~" || r.op == "=~"){
-		// 	var line = model.filter(function(d){ return (d.source.name==r.rval)&&(d.target.name==r.lval)})[0]
-		// 	line.beta = parseFloat(r.Estimate.toFixed(2))
-		// 	var x = (line.source.x+line.target.x+80)/2
-		// 	var y = (line.source.y+line.target.y+40)/2
-		// 	// create_text(x,y-20,r.Estimate.toFixed(2))
-		// }
-		// else if(r.op == "~~"){
-  //   		if(r.lval == r.rval)
-  //   			nodes[r.lval].error = parseFloat(r.Estimate.toFixed(2))
-
-  //   	}
-		
-		
+		$("#model_fit_body").append("</tr>")		
 	})
 }
 function parse_model(mdl){
@@ -457,35 +443,42 @@ $("body").on("click",".attr_list",function(){
 	console.log(target_attr)
 })
 
-$("#search_dag").on("click", function(){
-	var search_variables=[];
-	$(".search_attr").each(function(){
-		if(this.checked) search_variables.push($(this).val())
-	})
-	console.log(search_variables)
-	$.ajax({
-        url: '/causal_search',
-        data: JSON.stringify({attrs:search_variables,algo:$("#pycausal_algo").val()}),
-        //contentType: JSON,
-        type: 'POST',
-        success: function(res) {
-        	console.log(res)
-        	edges = res.edges;
-        	dot_string = res.dot_string;
-        	graphviz.fit("truthy")
-        	// graphviz.scale(true)
-        	// graphviz.height($("#searchSVG").height())
-        	// graphviz.engine("neato")
-        	graphviz
-        		.renderDot(res.dot_str)
-        	// scree_plot(res.eigenvalues)
-            		                   
-        },
-        error: function(error) { //error function for first ajax call
-            console.log(error);
-        }
-    });
+$("#causal_structure").on("change", function(e){
+	console.log(e.target.files)
+	if (!e.target.files.length) return;  
 
+    var file = e.target.files[0];
+    data_name = file.name;
+
+    var ext = data_name.split('.').pop();
+    if (ext != "txt") {
+        file_error("File format error");
+    } else {
+		// read txt data          
+    	var reader = new FileReader();
+        reader.readAsText(file);   
+
+        //send dag data to server using ajax
+        reader.onload = function(event) {
+			$.ajax({
+				url: '/upload_dag',
+				data: JSON.stringify({content:reader.result}),
+				type: 'POST',
+				success: function(res) {
+					console.log(res)
+					edges = res.edges;
+					dot_string = res.dot_string;
+					graphviz.fit("truthy")
+					graphviz
+						.renderDot(res.dot_str)
+											
+				},
+				error: function(error) { //error function for first ajax call
+					console.log(error);
+				}
+			});
+		}
+	}
 })
 function circular(_nodes,w=600,h=300) {
 	search_nodes = {}
@@ -506,16 +499,22 @@ function circular(_nodes,w=600,h=300) {
     return search_nodes
 }
 
-$("#save_model").on("click",function(){
+$("#save_model").on("click", function(){
+    $('#save_model_modal')
+        .modal('show')
+    ;
+})
+
+$("#final_save").on("click",function(){
 	
 	var saved_model = {}
 	saved_model['nodes'] = Object.values(nodes)
 	saved_model['links'] = model
 	saved_model['coeffs'] = coeffs;
-	console.log(saved_model)
+	var filename = $("#save_file_name").val()
 	$.ajax({
         url: '/save_model',
-        data: JSON.stringify({model:saved_model}),
+        data: JSON.stringify({model:saved_model, filename: filename}),
         //contentType: JSON,
         type: 'POST',
         success: function(res) {
@@ -713,8 +712,8 @@ function create_text(x,y,text,fill="grey"){
 
 /////////////////////////////////////* EFA Functions*//////////////////////////////////////
 
-$("#efa").on("click", function(){
-    $('#efa_modal')
+$("#get_started_button").on("click", function(){
+    $('#get_started_modal')
         .modal('show')
     ;
 })
