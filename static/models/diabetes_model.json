@@ -1,0 +1,205 @@
+{
+    "nodes": [
+        {
+            "id": 0,
+            "name": "BloodPressure",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 1,
+            "name": "Age",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 2,
+            "name": "SkinThickness",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 3,
+            "name": "BMI",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 4,
+            "name": "Glucose",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 5,
+            "name": "hasDiabetes",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 6,
+            "name": "Pregnancies",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 7,
+            "name": "DiabetesPedigreeFunction",
+            "data_type": "Numeric"
+        }
+    ],
+    "links": [
+        {
+            "source": {
+                "id": 1,
+                "name": "Age",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 0,
+                "name": "BloodPressure",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.24
+        },
+        {
+            "source": {
+                "id": 2,
+                "name": "SkinThickness",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 0,
+                "name": "BloodPressure",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.08
+        },
+        {
+            "source": {
+                "id": 3,
+                "name": "BMI",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 0,
+                "name": "BloodPressure",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.24
+        },
+        {
+            "source": {
+                "id": 2,
+                "name": "SkinThickness",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 3,
+                "name": "BMI",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.39
+        },
+        {
+            "source": {
+                "id": 3,
+                "name": "BMI",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 4,
+                "name": "Glucose",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.22
+        },
+        {
+            "source": {
+                "id": 1,
+                "name": "Age",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 5,
+                "name": "hasDiabetes",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.08
+        },
+        {
+            "source": {
+                "id": 3,
+                "name": "BMI",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 5,
+                "name": "hasDiabetes",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.34
+        },
+        {
+            "source": {
+                "id": 6,
+                "name": "Pregnancies",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 5,
+                "name": "hasDiabetes",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.26
+        },
+        {
+            "source": {
+                "id": 7,
+                "name": "DiabetesPedigreeFunction",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 5,
+                "name": "hasDiabetes",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.16
+        },
+        {
+            "source": {
+                "id": 4,
+                "name": "Glucose",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 5,
+                "name": "hasDiabetes",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.68
+        }
+    ],
+    "coeffs": {
+        "Age": 0.11884941259685855,
+        "BMI": 0.38945431437748024,
+        "BloodPressure": -0.16562909447512963,
+        "DiabetesPedigreeFunction": 0.16136369160361552,
+        "Glucose": 0.6751413911626531,
+        "Pregnancies": 0.2588092918990192,
+        "SkinThickness": -0.020560135777888344
+    }
+}

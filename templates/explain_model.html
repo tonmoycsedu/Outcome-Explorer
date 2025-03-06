@@ -1,0 +1,175 @@
+
+<script type="text/javascript">console.log('{{attrs[1]}}')</script>
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container-fluid">
+	<br>
+	<div class="row">	
+		<div class="col-lg-8">
+            <div class="causal" style=""></div>  		
+		</div>
+		<div id="persona_div" class="col-lg-4" align="center" style="display: none;border-left: 0.1px solid #e8e2e2;">		
+				<label style="margin-top:5px;font-weight: bold;">Sample List</label>
+				<select  id="sample_list" class="ui search dropdown">
+					<option> -------</option>	
+				</select>
+				<hr>
+				<div id="slider_div" style="position: absolute; top:65px;left:80px;z-index: 2;">
+					
+					<input id="myRange" type="range" min="0" max="1" value="1" style="display:none;width: 100px;">	
+					<p > Radius</p>
+				</div>
+				
+				<div class="" style="">
+					<div id="tooltip1" class="tooltip hidden"></div>
+					<div id="scatter_plot" style="display: inline-block;"></div>	
+					<div id="legend1" style="display: inline-block;"></div>	
+				</div>
+				<div id="tooltip2" class="tooltip hidden"></div>
+				<hr>
+				<div id="line_chart" class="" style=""></div>
+				<hr>
+				<div id="feasibility">
+					
+					<div id="feasibility_bars" style="position: relative"></div>
+					<!-- <div style="position: absolute; top:690px;left:450px;z-index: 2;opacity:0.5">Group</div>
+					<select id="school_category" style="position: absolute; top:670px;left:430px;z-index: 2">
+						<option value="4">All</option>
+						<option value="2">Group 1</option>
+						<option value="0">Group 2</option>
+						<option value="1">Group 3</option>
+						
+					</select> -->
+				</div>
+		</div>
+	</div>
+	<div class="row">
+		
+	</div>
+	<div class="ui large modal">
+	  <div class="header">Latent Factor</div>
+	  <div class="content">
+	  	<div class="row">
+	  		<div class="col-lg-6">
+	  			<table class="ui celled table segment">
+				  <thead>
+				    <tr><th>Indicator Variables</th>
+				    	<th>Weight</th>
+				  </tr></thead>
+				  <tbody id="factor_body">
+				  	{%for attr in attrs:%}
+					    <tr>
+					      <td>
+					      	<div class="ui checkbox">
+					      		<input type="checkbox" class="indicator" value="{{attr}}">
+  								<label>{{attr}}</label>	
+  							</div>
+					      </td>
+					      <td>
+					      	<div class="ui mini input">
+					      		<input id="{{attr}}" type="number" class="corr">
+  							</div>
+					      </td>
+					    </tr>
+					{%endfor%}	
+				  </tbody>
+				</table>	
+	  		</div>
+	  		<div class="col-lg-6">
+	  			<i class="arrow right icon"></i>
+	  			<div class="ui input">
+	  			  <!-- <label></label> -->
+				  <input type="text" id="cfa_name" placeholder="Latent Factor Name">&nbsp;&nbsp;
+				  <button id="cfa_go" class="ui primary button">
+					  Create
+					</button>
+				</div>	
+	  		</div>
+	  	</div>
+	   </div>
+	  </div>
+	  <div id="latent_modal" class="ui large modal">
+	  <div class="header">Latent Factor</div>
+	  <div class="content">
+	  	<div class="row">
+	  		<div class="col-lg-6">
+	  			<table class="ui celled table segment">
+				  <thead>
+				    <tr><th>Indicator Variables</th>
+				    	<th>Weight</th>
+				  </tr></thead>
+				  <tbody id="factor_body">
+				  	{%for attr in attrs:%}
+					    <tr>
+					      <td>
+					      	<div class="ui checkbox">
+					      		<input type="checkbox" class="indicator" value="{{attr}}">
+  								<label>{{attr}}</label>	
+  							</div>
+					      </td>
+					      <td>
+					      	<div class="ui mini input">
+					      		<input id="{{attr}}" type="number" class="corr">
+  							</div>
+					      </td>
+					    </tr>
+					{%endfor%}	
+				  </tbody>
+				</table>	
+	  		</div>
+	  		<div class="col-lg-6">
+	  			<i class="arrow right icon"></i>
+	  			<div class="ui input">
+	  			  <!-- <label></label> -->
+				  <input type="text" id="cfa_name" placeholder="Latent Factor Name">&nbsp;&nbsp;
+				  <button id="cfa_go" class="ui primary button">
+					  Create
+					</button>
+				</div>	
+	  		</div>
+	  	</div>
+	   </div>
+	  </div>
+	  <div id="desc_modal" class="ui large modal">
+	  <div class="header">Attribute Description</div>
+	  <div class="content">
+	  	<div class="row">
+	  		<div class="col-lg-12">
+	  			<table class="ui celled table segment">
+				  <thead>
+				    <tr><th>Attribute</th>
+				    	<th>Description</th>
+				  </tr></thead>
+				  <tbody id="desc_body">
+				  	
+				  </tbody>
+				</table>	
+	  		</div>
+	  	</div>
+	   </div>
+	  </div>
+	</div>
+</div>
+<script type="text/javascript"> var baseline= false</script>
+<!-- Main JavaScript -->
+<script type = "text/javascript" src="{{ url_for('static', filename='vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+<script type = "text/javascript" src="{{ url_for('static', filename='vendor/popper.min.js') }}"></script>
+<script type = "text/javascript" src="{{ url_for('static', filename='vendor/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/semantic2.4/semantic.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/d3/d3.min.js') }}"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/roundslider.js') }}"></script>
+
+<!-- user js files -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/flow.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/flowlayout.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/explain_model.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/path_analysis.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/probe_mode.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/graph_viz.js') }}"></script>
+<script type="text/javascript" async src="{{ url_for('static', filename='js/bar_charts.js') }}"></script>
+<script type="text/javascript" async src="{{ url_for('static', filename='js/scatterplot.js') }}"></script>
+<script type="text/javascript" async src="{{ url_for('static', filename='js/line_chart.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/input.js') }}"></script>
+{% endblock content %}

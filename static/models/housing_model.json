@@ -1,0 +1,328 @@
+{
+    "nodes": [
+        {
+            "id": 0,
+            "name": "NOX",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 1,
+            "name": "PERCENTAGE_OLD_HOUSE",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 2,
+            "name": "INDUS",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 3,
+            "name": "DISTANCE_FROM_CITY",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 4,
+            "name": "LOWER_STATUS",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 5,
+            "name": "ROOM_PER_DWELLING",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 6,
+            "name": "CRIME_RATE",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 7,
+            "name": "TAX",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 8,
+            "name": "ACCESSIBILTY_TO_HWY",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 9,
+            "name": "MED_PRICE",
+            "data_type": "Numeric"
+        },
+        {
+            "id": 10,
+            "name": "PTRATIO",
+            "data_type": "Numeric"
+        }
+    ],
+    "links": [
+        {
+            "source": {
+                "id": 1,
+                "name": "PERCENTAGE_OLD_HOUSE",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 0,
+                "name": "NOX",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.25
+        },
+        {
+            "source": {
+                "id": 2,
+                "name": "INDUS",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 0,
+                "name": "NOX",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.38
+        },
+        {
+            "source": {
+                "id": 3,
+                "name": "DISTANCE_FROM_CITY",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 0,
+                "name": "NOX",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": -0.31
+        },
+        {
+            "source": {
+                "id": 1,
+                "name": "PERCENTAGE_OLD_HOUSE",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 4,
+                "name": "LOWER_STATUS",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.35
+        },
+        {
+            "source": {
+                "id": 5,
+                "name": "ROOM_PER_DWELLING",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 4,
+                "name": "LOWER_STATUS",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": -0.44
+        },
+        {
+            "source": {
+                "id": 2,
+                "name": "INDUS",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 4,
+                "name": "LOWER_STATUS",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.14
+        },
+        {
+            "source": {
+                "id": 6,
+                "name": "CRIME_RATE",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 4,
+                "name": "LOWER_STATUS",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.18
+        },
+        {
+            "source": {
+                "id": 2,
+                "name": "INDUS",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 7,
+                "name": "TAX",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.28
+        },
+        {
+            "source": {
+                "id": 8,
+                "name": "ACCESSIBILTY_TO_HWY",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 7,
+                "name": "TAX",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.75
+        },
+        {
+            "source": {
+                "id": 8,
+                "name": "ACCESSIBILTY_TO_HWY",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 2,
+                "name": "INDUS",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.32
+        },
+        {
+            "source": {
+                "id": 3,
+                "name": "DISTANCE_FROM_CITY",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 2,
+                "name": "INDUS",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": -0.55
+        },
+        {
+            "source": {
+                "id": 5,
+                "name": "ROOM_PER_DWELLING",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 9,
+                "name": "MED_PRICE",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": 0.35
+        },
+        {
+            "source": {
+                "id": 4,
+                "name": "LOWER_STATUS",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 9,
+                "name": "MED_PRICE",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": -0.41
+        },
+        {
+            "source": {
+                "id": 6,
+                "name": "CRIME_RATE",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 9,
+                "name": "MED_PRICE",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": -0.05
+        },
+        {
+            "source": {
+                "id": 10,
+                "name": "PTRATIO",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 9,
+                "name": "MED_PRICE",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": -0.21
+        },
+        {
+            "source": {
+                "id": 7,
+                "name": "TAX",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 9,
+                "name": "MED_PRICE",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": -0.01
+        },
+        {
+            "source": {
+                "id": 0,
+                "name": "NOX",
+                "data_type": "Numeric"
+            },
+            "target": {
+                "id": 9,
+                "name": "MED_PRICE",
+                "data_type": "Numeric"
+            },
+            "type": "def",
+            "direct_type": "Directed",
+            "beta": -0.01
+        }
+    ],
+    "coeffs": {
+        "ACCESSIBILTY_TO_HWY": 0.2715970188461214,
+        "CRIME_RATE": -0.10839417789085584,
+        "DISTANCE_FROM_CITY": -0.28007399938670097,
+        "INDUS": 0.008937366861019092,
+        "LOWER_STATUS": -0.43155023424739414,
+        "NOX": -0.2380819003483312,
+        "PERCENTAGE_OLD_HOUSE": 0.0018696182583323728,
+        "PTRATIO": -0.26354150467387005,
+        "ROOM_PER_DWELLING": 0.2988286771920181,
+        "TAX": -0.2074675487866684
+    }
+}

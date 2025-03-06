@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-lg-2 ui segment">
+			<!-- <form> -->
+			  <div class="form-group">
+			    <label for="file-upload">Upload Data</label>
+			    <input type="file" class="form-control-file" id="file-upload">
+			  </div>
+			  <hr>
+			  <div class="div_scroll small">
+			  	<h4>Attributes</h4>
+			  	<ul id="attribute_list" class="list_group" style="padding-inline-start: 0px;"></ul>
+			  	
+			  </div>
+			  <hr>
+			  <div>
+			  	<a name="selector" class="sem_controls" href="#">
+			  		<img class="sem_image" src="{{ url_for('static', filename='images/selector1.png') }}">	
+			  	</a>
+			  	<a name="observed" class="sem_controls" href="#">
+			  		<img class="sem_image" src="{{ url_for('static', filename='images/rectangle.png') }}">	
+			  	</a>
+			  	<a name="latent" class="sem_controls" href="#">
+			  		<img class="sem_image" src="{{ url_for('static', filename='images/oval.png') }}">
+			  	</a>
+			  	
+			  	<a name="edge" class="sem_controls" href="#">
+			  		<img class="sem_image small" src="{{ url_for('static', filename='images/arrow.png') }}">
+			  	</a>
+			  	<a name="edge_bid" class="sem_controls" href="#">
+			  		<img class="sem_image small" src="{{ url_for('static', filename='images/arrow_bid1.png') }}">
+			  	</a>
+			  	<a name="error" class="sem_controls" href="#">
+			  		<img class="sem_image" src="{{ url_for('static', filename='images/circle.png') }}">
+			  	</a>
+			  </div>
+			  <hr>
+			  <div class="div_scroll small">
+			  	<h4>Define Model</h4>
+			  	<textarea id="define_model" class="form-control" rows="6"></textarea>	
+			  	<a id="update_visual" href="#">Update Visual Model</a>
+			  </div>
+			  <hr>
+			  <button id="efa" type="button" class="btn btn-outline-primary">Start EFA</button>
+			  <button id="run" type="button" class="btn btn-outline-primary">Run Model</button>
+			  <button id="save_model" type="button" class="btn btn-outline-success" style="margin-top: 10px;">Save Model</button>
+			<!-- </form> -->
+		</div>
+		<div id="middle_section" class="col-lg-6">
+			<!-- <svg id="model" style="height: 500px">
+				<g id="pathSVG"></g>
+				<g id="contentSVG"></g>
+			</svg> -->	
+			<!-- <hr> -->
+			<div style="height:500px;">
+				<div id="search_attributes" style="margin-bottom: 10px"></div>	
+	  			<span class="search_opt" style="margin-right: 50px; display: none "><a id="selectAll_search" href="#">Select All</a></span>
+				<!-- <span style="margin-right: 20px; "><input type="checkbox" name=""> Use Defined Factors</span> -->
+				<span class="search_opt" style="margin-right: 50px; display: none ">
+					Select Algorithm:
+					<select id="pycausal_algo">
+						<option value="pc-all">PC</option>
+						<option value="fci">FCI</option>
+						<option value="rfci">RFCI</option>
+						<option value="gfci">GFCI</option>
+					</select>	
+				</span>
+				<span class="search_opt" style="display: none"> <a id="search_dag" href="#">Search Causal DAG</a></span>
+				<div id="searchSVG" style="height: 600px">
+				</div>
+				<div id="searchControl">
+					Source:
+					<select id="src_list" style="margin-right: 10px">
+					</select> 
+					Target:
+					<select id="target_list" style="margin-right: 10px">
+					</select> 
+					<a id="add_edge" href="#" style="margin-right: 10px">Add</a>
+					<a id="direct" href="#" style="margin-right: 10px">Direct</a>
+					<a id="remove" href="#" style="margin-right: 10px">Remove</a>
+					<a id="reverse" href="#" style="margin-right: 10px">Reverse</a>
+				</div>
+				
+			</div>
+		</div>
+		
+		<div id="results" class="col-lg-4 ui segment" style="margin-top:0 ">
+			<div class="div_scroll small">
+				<h4>Model Fit</h4>
+				<div id="modelfit"></div>
+			</div>
+			<hr>
+			<div class="div_scroll large">
+				<h4>Parameter Estimation</h4>
+				<table class="ui fixed compact table">
+					<thead>
+						<tr>
+							<th>lval</th>
+							<th>op</th>
+							<th>rval</th>
+							<th>estimate</th>
+							<th>Std. Err.</th>
+							<th>p value</th>
+							<th>z-value</th>
+						</tr>
+					</thead>
+					<tbody id="model_fit_body">
+						
+					</tbody>
+					
+				</table>
+			</div>
+			<hr>
+			<div class="div_scroll large">
+				<h4>Prediction Statistics</h4>
+				<div id="prediction_stat"></div>
+			</div>	
+		</div>
+	</div>
+	<div id="efa_modal" class="ui large modal">
+	  	<div class="header">Exploratory Factor Analysis</div>
+	  	<div class="scrolling content">
+	  		<div class="">
+	  			<h4>Select Variables: </h4>
+	  			<div id="efa_attributes"></div>	
+	  			<a id="selectAll" href="#">Select All</a>
+	  			
+	  		</div>
+	  		<br>
+	  		<button id="run_efa" type="button" class="btn btn-outline-primary">Run EFA</button>
+	  		<div id="scree_plot"></div>
+	  		<div id="loadings"></div>
+	  		<div id="variance"></div>
+	  	</div>
+	  	
+	</div>
+</div>
+<!-- <div id="tooltip" style="opacity:0;width: 200px">
+	<ul id="tooltip_list" class="list_group"></ul>
+</div> -->
+<script type="text/javascript"> var baseline= false</script>
+
+<script type = "text/javascript" src="{{ url_for('static', filename='vendor/jquery/jquery-3.3.1.min.js') }}"></script>
+<script type = "text/javascript" src="{{ url_for('static', filename='vendor/popper.min.js') }}"></script>
+<script type = "text/javascript" src="{{ url_for('static', filename='vendor/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/semantic2.4/semantic.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/d3/d3.min.js') }}"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='vendor/roundslider.js') }}"></script>
+
+<!-- user js files -->
+<script type="text/javascript" src="{{ url_for('static', filename='js/create_model.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/line_chart.js') }}"></script>
+<script src="https://unpkg.com/@hpcc-js/wasm@0.3.11/dist/index.min.js"></script>
+<script src="https://unpkg.com/d3-graphviz@3.0.5/build/d3-graphviz.js"></script>
+{% endblock content %}

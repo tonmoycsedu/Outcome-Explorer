@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container-fluid">
+	<br>
+	<div class="row">
+		<div id="attributes_div" class="col-lg-2" >
+			<!-- <div class="ui segment">
+				<label style="margin-right: 5px;font-weight: bold;">Attributes</label>
+				<select name="attributes" id="attributes" multiple="" class="ui fluid dropdown">
+					{%for attr in attrs:%}					    
+					      <option value="{{attr}}">{{attr}}</option>					    
+				    {%endfor%}	
+				</select>
+				<br>
+				
+				<button id="go" class="ui primary button">
+				  Run
+				</button>
+				<button id="update" class="ui button">
+				  Update
+				</button>
+			</div> -->
+			<!-- <div id="change_settings" class="ui segment" style="margin-top: 10px;display: none;">
+				<div class="mini ui buttons">
+				  <button class="compact ui button change_percentage" >Increase</button>
+				  <div class="or"></div>
+				  <button class="compact ui button change_percentage">Decrease</button>
+				</div>
+				<br><br>
+				<label>Change&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
+			    <input id="percentage_value" type="range" min="0" max="100" value="0">	
+
+				<label>Sensitivity</label>
+			    <input id="sensitivity_value" type="range" min="0" max="100" value="0">	
+				    
+				<br><br>
+			    <button id="play" class="mini ui button play_stop">Probe</button>
+			    <button id="stop" class="mini ui button play_stop"><i class="close icon"></i></button>
+			</div>
+			<div id="tooltip2" class="tooltip hidden"></div>
+			<div id="line_chart" class="ui segment"></div> -->
+			
+		</div>
+		<div class="col-lg-6">
+			<div class="ui form">
+                <div class="fields">
+                    <div class="ui field">
+                        <label id="srclabel" style="margin-top:5px;margin-left:5px;">Source*</label>
+                    </div>
+                    <div class="ui field">
+                        <!--<select id="source" class="ui selection dropdown"></select>-->
+                        <div class="ui selection dropdown" id="source">
+                            <input name="source" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text"></div>
+                            <div class="menu"></div>    
+                        </div>
+                    </div>
+                    <div class="ui field">
+                        <label id="tarlabel" style="margin-top:5px;">Target</label>
+                    </div>
+                    <div class="ui field">
+                        <!--<select id="target" class="ui selection dropdown"></select>-->
+                        <div class="ui selection dropdown" id="target">
+                            <input name="target" type="hidden">
+                            <i class="dropdown icon"></i>
+                            <div class="default text"></div>
+                            <div class="menu"></div>
+                        </div>
+                    </div>
+                    <div class="ui field" style="width:370px;">
+                        <div class="ui fluid tiny basic compact buttons">
+                            <button class="ui button" id="bcre">Create</button>
+                            <button class="ui button" id="bdel">Delete</button>
+                            <button class="ui button" id="bdir">Direct</button>
+                            <button class="ui button" id="brev">Reverse</button>
+
+                        </div>
+                    </div>
+                    <div class="ui field" style="margin-left:-10px;">
+                        <button class="ui compact basic icon button" id="refresh" data-tooltip="Refresh layout">
+                                <i class="ui refresh icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="causal ui segment" style="margin-top:40px;margin-left: 50px"></div>
+		    <div id="baseline" class="col-lg-6"></div>		
+		</div>
+		<div id="persona_div" class="col-lg-4" align="center" style="display: none;">
+			<!-- <h4>Sample List</h4> -->			
+				<label style="margin-top:5px;font-weight: bold;">Sample List</label>
+				<select  id="sample_list" class="ui search dropdown">
+					<option> -------</option>	
+				</select>
+				<!-- <div id="slider_div" style="margin-top:5px; display: none">
+					<input id="myRange" type="range" min="1" max="200" value="20">	
+				</div> -->
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-2"></div>
+		
+	</div>
+</div>
+<script type="text/javascript"> var baseline= true</script>
+{% endblock content %}

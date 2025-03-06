@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='vendor/bootstrap/bootstrap.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/flow.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/roundslider.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/custom.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/semantic2.4/semantic.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/blog_layout.css') }}">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/timeline.css') }}"> -->
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-contextmenu/2.7.1/jquery.contextMenu.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/fancyknob.css') }}"> -->
+
+    {% if title %}
+        <title>Causality - {{ title }}</title>
+    {% else %}
+        <title>Outcome Explorer</title>
+    {% endif %}
+</head>
+<body>
+
+	<!-- Nav bar start -->
+	<nav class="navbar navbar-expand-lg navbar-dark site-color">
+		<a class="navbar-brand" href="{{url_for('home')}}" >Outcome Explorer</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+	  	</button>
+	  	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            {% if title == 'Create Model' %}
+    		    <div class="navbar-nav">
+    		      <a class="nav-item nav-link active" href="{{url_for('create_model')}}">Create Model <span class="sr-only">(current)</span></a>
+    		      <a class="nav-item nav-link" href="{{url_for('explain_model')}}">Interpret Model</a>     
+    		    </div>
+            {% else %}
+                <div class="navbar-nav">
+                  <a class="nav-item nav-link" href="{{url_for('create_model')}}">Create Model <span class="sr-only">(current)</span></a>
+                  <a class="nav-item nav-link active" href="{{url_for('explain_model')}}">Interpret Model</a>     
+                </div>
+            {% endif %}
+	  	</div>
+	</nav>
+	<!-- Nav bar end -->
+	
+	<!-- main container start -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</body>
+</html>
+

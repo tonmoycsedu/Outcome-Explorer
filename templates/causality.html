@@ -1,0 +1,356 @@
+{% extends "layout.html" %}
+{% block content %}
+	<!-- modal for attribute type selection -->
+	<div class="ui small modal" id="dim-modal">
+        <div class="header">
+            <i class="warning icon"></i>Data Type and Data Prepare Method
+        </div>
+        {%if case:%}
+	        <div class="header"> 
+	            This is a {{session['category']}} level data thread, to augment to this story please indicate the state attribute in your dataset as key.
+	        </div>
+
+        {%else:%}
+        	<div class="header"> 
+	            This is a State level data thread, to save to this story please indicate the state attribute in your dataset as key.
+	        </div>
+
+        {%endif%}
+        <div class="content">
+            <label><h4>Attribute types</h4></label>
+            <table class="ui compact small table"></table>
+            <label><h4>Data preparation method</h4></label>
+            <div class="ui form">
+                <div class="inline fields">
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="prep" value="mediate" checked>
+                            <label>Convert categorical attributes to numeric ones (recommanded when most attributes are numeric)</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="prep" value="binning">
+                            <label>Binning numeric attributes into categorical (recomanded when most attributes are categorical)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <label><h4>Missing/Null value treatment</h4></label>
+	            <div class="ui form">
+	                <div class="inline fields">
+	                    <div class="field">
+	                        <div class="ui radio checkbox">
+	                            <input type="radio" name="pre-process" value="delete-null" checked>
+	                            <label>Delete Rows with null values</label>
+	                        </div>
+	                    </div>
+	                    <div class="field">
+	                        <div class="ui radio checkbox">
+	                            <input type="radio" name="pre-process" value="impute-mean">
+	                            <label>Impute mean value</label>
+	                        </div>
+	                    </div>
+	                    <div class="field">
+	                        <div class="ui radio checkbox">
+	                            <input type="radio" name="pre-process" value="interpolate">
+	                            <label>Interpolate</label>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+        </div>
+        <div class="actions">
+            <div class="ui primary right labeled icon approve button">
+                Confirm
+                <i class="checkmark icon"></i>
+            </div>
+        </div>
+    </div>
+    <!-- end modal -->
+
+    <div class="row set-padding">
+    	<!-- File Upload section -->
+    	{%if flag == "edit":%}
+        <div class="col-md-2">
+        	<div class="panel panel-primary">
+        		{%if case:%}
+	        		<div class="panel-heading site-color">
+	        			Augment data to this story
+	        		</div>
+        		{%else:%}
+        			<div class="panel-heading site-color">
+	        			Upload your csv file
+	        		</div>
+        		{%endif%}
+  				<div class="panel-body">
+
+        			<form id="file-form" enctype="multipart/form-data">
+			  			<div class="form-group">
+			    			<fieldset>
+			    				{%if case:%}
+			    					<input type="file" class="form-control-file" id="file-upload" name="augment">
+		    					{%else:%}
+		    						<input type="file" class="form-control-file" id="file-upload" name="new">
+	    						{%endif%}
+			    				
+			    			</fieldset>
+			    			
+			    			
+			  			</div>
+					</form>
+				</div>        
+        	</div>
+        	
+        	<div class="panel panel-primary">
+        		<div class="panel-heading site-color">
+        			Your Models
+        		</div>
+  				<div class="panel-body">
+  					<ul>
+	        			{% if 'email' in session:%}
+	        				{% for model in model_names:%} 
+	        					<li><a class="model_choice" href="#" name={{model}}>{{model}}</a></li>
+	        				{%endfor%}	        				
+	        			{%endif%}
+        			</ul>
+				</div>        
+        	</div>
+        	<!-- <div class="dropdown show">
+			  <a class="btn btn-primary site-color dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    <span id="selected">Story Category</span><span class="caret"></span>
+			  </a>
+
+			  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+			    <li><a class="dropdown-item" href="#">State</a></li>
+			    <li><a class="dropdown-item" href="#">County</a></li>
+			    <li><a class="dropdown-item" href="#">National</a></li>
+			    <li><a class="dropdown-item" href="#">Other</a></li>
+			  </ul>
+			</div>
+			<br>
+        	<div>
+        		<input type="text" name="story_name" id= "story_name" class="form-control" placeholder="Enter Story Name"><br>
+        		<button class="btn btn-primary site-color" id="save_model" disabled>Save the model</button>
+        	</div>
+        	<br>
+        	<div>
+        		<button class="btn btn-primary site-color" id="publish_model" disabled>Publish the story</button>
+        	</div> -->
+    	</div>
+    	{%endif%}
+    	<!-- file upload ends-->
+
+    	<!-- Main network start-->
+    	<div class= "col-md-10">
+
+    		<div class="graph-view">
+    			<!-- {%if flag == "edit":%} -->
+	            <!-- <div class="seg-header">
+	                <table>
+	                    <tr>
+	                        <td style="width:440px;">
+	                            <h4>Causal Network</h4>
+	                        </td>
+	                        <td>
+	                            <div style="font-size:0.9rem;line-height:17px;padding-top:2px;">
+	                                <label>Coef. Threshold: </label><input type="range" name="coef" value="0" min="0" max="1" step="0.01">
+	                            </div>
+	                        </td>
+	                        <td style="padding-top:2px;">
+	                            <div id="thre" style="min-width:50px;max-width:50px;font-size:0.9rem;line-height:17px;padding-left:3px;">0.00</div>
+	                        </td>
+	                        <td style="font-size:0.9rem !important; padding-top:1px;">
+	                            <div class="ui checkbox" id="edgeglyph">
+	                                <input type="checkbox" checked>
+	                                <label>Edge Score</label>
+	                            </div>
+	                        </td>
+	                    </tr>
+	                </table>
+	            </div> -->
+	            <!-- paste code from notepad -->
+	            
+	             
+	            <!-- {%endif%} -->
+	            {%if flag=="show":%}
+	            	<h1>{{model_name}}</h1>
+	            	<!-- <a href="{{url_for('causality', model_id=model_name, user=author, case='1')}}"><button class="btn btn-primary site-color" >Edit/Extend this story</button></a> -->
+	            	<input type="hidden" name="model_data_hidden" id= "model_data_hidden" class="form-control" value= "{{active_model}}">
+	            	
+	            	<input type="hidden"  id= "timeline_data" class="form-control" value= "{{timeline}}">
+	            	<div class="row set-padding">
+		            	<div class="causal col-md-6"></div>
+		            	<div class="col-md-6">
+		            		<div class="flex-parent">
+								<div class="input-flex-container">
+									<h4>Timeline</h4>
+				            		{%for model in timeline:%}
+				            			<div class="input active">
+							                <span data-year="{{model['index']}}"  data-info="{{model['type']}}"></span>
+							            </div>
+						            {%endfor%}
+									
+									
+								</div>
+					    	</div>
+		            		
+		            		
+					    	<!-- <textarea rows="20" cols="120" placeholder="write your story here"></textarea> -->
+					    	
+					    </div>
+		            <!-- main dag ends -->
+
+		            <!-- BCI score  -->
+		            	<!-- <div class="score col-md-2"></div> -->
+		            </div>	
+		            <div class="row set-padding">
+		            	<div class="col-md-10">
+		            		<h1>Detail</h1>
+		            		<p style="font-size: 22px">{{story_text}}</p>
+		            	</div>
+		            </div>
+	            	
+	            {%endif%}
+	            {%if flag=="edit":%}
+		            {%if case:%}
+			            <div class="row">
+			            	<div class="col-md-2">
+			            		<h2>{{model_name}}</h2>
+			            	</div>
+	            	{%else:%}
+	            		<div class="row">
+			            	<div class="col-md-2">
+			            		<h2>Story Name</h2>
+			            	</div>
+	            	{%endif%}
+			            	<!-- <button class="btn btn-primary site-color">Edit/Extend this story</button> -->
+			            	 
+			            	<input type="hidden" name="model_data_hidden" id= "model_data_hidden" class="form-control" value= "{{active_model}}">
+			            	<div class="col-md-2">
+				            	<div class="dropdown show">
+								  <a class="btn btn-primary site-color dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								    <span id="selected">Story Category</span><span class="caret"></span>
+								  </a>
+
+								  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+								    <li><a class="dropdown-item" href="#">State</a></li>
+								    <li><a class="dropdown-item" href="#">County</a></li>
+								    <li><a class="dropdown-item" href="#">National</a></li>
+								    <li><a class="dropdown-item" href="#">Other</a></li>
+								  </ul>
+								</div>
+
+							</div>
+							<div class="col-md-2">
+								<input type="text" name="story_name" id= "story_name" class="form-control" placeholder="Enter Story Name">
+							</div>
+							<div class="col-md-4">
+								
+					        		
+					        		<button class="btn btn-primary site-color" id="save_model" disabled>Save the model</button>
+					        	
+					        	
+					        	
+					        		<button class="btn btn-primary site-color" id="publish_model" disabled>Publish the story</button>
+					        	
+					        </div>
+							
+							
+						</div>
+
+						<br>
+
+						<div class="graph-editor">
+
+			            	<!-- option for source, target, create,delete, and control buttons -->
+			                <div class="ui form">
+			                    <div class="fields">
+			                        <div class="ui field">
+			                            <label id="srclabel" style="margin-top:5px;margin-left:5px;">Source*</label>
+			                        </div>
+			                        <div class="ui field">
+			                            <!--<select id="source" class="ui selection dropdown"></select>-->
+			                            <div class="ui selection dropdown" id="source">
+			                                <input name="source" type="hidden">
+			                                <i class="dropdown icon"></i>
+			                                <div class="default text"></div>
+			                                <div class="menu">
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <div class="ui field">
+			                            <label id="tarlabel" style="margin-top:5px;">Target</label>
+			                        </div>
+			                        <div class="ui field">
+			                            <!--<select id="target" class="ui selection dropdown"></select>-->
+			                            <div class="ui selection dropdown" id="target">
+			                                <input name="target" type="hidden">
+			                                <i class="dropdown icon"></i>
+			                                <div class="default text"></div>
+			                                <div class="menu">
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <div class="ui field" style="width:370px;">
+			                            <div class="ui fluid tiny basic compact buttons">
+			                                <button class="ui button" id="bcre">Create</button>
+			                                <button class="ui button" id="bdel">Delete</button>
+			                                <button class="ui button" id="bdir">Direct</button>
+			                                <button class="ui button" id="brev">Reverse</button>
+			                            </div>
+			                        </div>
+			                        <div class="ui field" style="margin-left:-5px;">
+			                            <button class="ui compact basic icon button" id="filter" data-tooltip="Remove hidden links">
+			                                    <i class="ui filter icon"></i>
+			                                </button>
+			                        </div>
+			                        <div class="ui field" style="margin-left:-10px;">
+			                            <button class="ui compact basic icon button" id="refresh" data-tooltip="Refresh layout">
+			                                    <i class="ui refresh icon"></i>
+			                                </button>
+			                        </div>
+			                    </div>
+			                </div>
+			            </div>
+			            <div class="row set-padding">
+			            	<div class="causal col-md-6"></div>
+			            	<div class="col-md-4" id="textarea">
+						    	<!-- <textarea rows="20" cols="120" placeholder="write your story here"></textarea> -->
+						    	
+						    </div>
+			            <!-- main dag ends -->
+
+			            <!-- BCI score  -->
+			            	<!-- <div class="score col-md-2"></div> -->
+			            </div>	
+            	{%endif%}
+	            <!-- main dag view -->
+	            
+	            <!-- BCI score bar ends -->
+	        </div>
+    	</div>
+    </div>
+    <div class="row set-padding">
+
+    	<div class="col-md-6">
+	    	<div class="flex-parent">
+				<div class="input-flex-container">
+					
+					
+				</div>
+	    	</div>
+	    </div>
+	    
+    	
+    </div>
+    
+    	
+    	
+
+    
+    
+{% endblock content %}
+

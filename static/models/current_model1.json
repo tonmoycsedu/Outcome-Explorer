@@ -1,0 +1,267 @@
+{
+  "nodes": [
+    {
+      "id": "latent1",
+      "name": "acad_skill",
+      "data_type": "Latent",
+      "x": 250,
+      "y": 90
+    },
+    {
+      "id": "obsrvd1",
+      "name": "cgpa",
+      "data_type": "Numeric",
+      "x": 50,
+      "y": 10
+    },
+    {
+      "id": "obsrvd2",
+      "name": "gre",
+      "data_type": "Numeric",
+      "x": 50,
+      "y": 120
+    },
+    {
+      "id": "obsrvd3",
+      "name": "toefl",
+      "data_type": "Numeric",
+      "x": 50,
+      "y": 230
+    },
+    {
+      "id": "latent2",
+      "name": "aptitude",
+      "data_type": "Latent",
+      "x": 250,
+      "y": 440
+    },
+    {
+      "id": "obsrvd4",
+      "name": "lor",
+      "data_type": "Numeric",
+      "x": 50,
+      "y": 340
+    },
+    {
+      "id": "obsrvd5",
+      "name": "sop",
+      "data_type": "Numeric",
+      "x": 50,
+      "y": 450
+    },
+    {
+      "id": "obsrvd6",
+      "name": "research",
+      "data_type": "Numeric",
+      "x": 50,
+      "y": 560
+    },
+    {
+      "id": "obsrvd7",
+      "name": "admit",
+      "data_type": "Numeric",
+      "x": 600,
+      "y": 250
+    }
+  ],
+  "links": [
+    {
+      "source": {
+        "id": "latent1",
+        "name": "acad_skill",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 90
+      },
+      "target": {
+        "id": "obsrvd1",
+        "name": "cgpa",
+        "data_type": "Numeric",
+        "x": 50,
+        "y": 10
+      },
+      "type": "def",
+      "direct_type": "Directed",
+      "beta": 1
+    },
+    {
+      "source": {
+        "id": "latent1",
+        "name": "acad_skill",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 90
+      },
+      "target": {
+        "id": "obsrvd2",
+        "name": "gre",
+        "data_type": "Numeric",
+        "x": 50,
+        "y": 120
+      },
+      "type": "def",
+      "direct_type": "Directed",
+      "beta": 1.8
+    },
+    {
+      "source": {
+        "id": "latent1",
+        "name": "acad_skill",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 90
+      },
+      "target": {
+        "id": "obsrvd3",
+        "name": "toefl",
+        "data_type": "Numeric",
+        "x": 50,
+        "y": 220
+      },
+      "type": "def",
+      "direct_type": "Directed",
+      "beta": 1.77
+    },
+    {
+      "source": {
+        "id": "latent2",
+        "name": "aptitude",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 440
+      },
+      "target": {
+        "id": "obsrvd4",
+        "name": "lor",
+        "data_type": "Numeric",
+        "x": 50,
+        "y": 330
+      },
+      "type": "def",
+      "direct_type": "Directed",
+      "beta": 1
+    },
+    {
+      "source": {
+        "id": "latent2",
+        "name": "aptitude",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 440
+      },
+      "target": {
+        "id": "obsrvd5",
+        "name": "sop",
+        "data_type": "Numeric",
+        "x": 50,
+        "y": 440
+      },
+      "type": "def",
+      "direct_type": "Directed",
+      "beta": 1.08
+    },
+    {
+      "source": {
+        "id": "latent2",
+        "name": "aptitude",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 440
+      },
+      "target": {
+        "id": "obsrvd6",
+        "name": "research",
+        "data_type": "Numeric",
+        "x": 50,
+        "y": 550
+      },
+      "type": "def",
+      "direct_type": "Directed",
+      "beta": 0.76
+    },
+    {
+      "source": {
+        "id": "latent2",
+        "name": "aptitude",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 440
+      },
+      "target": {
+        "id": "obsrvd1",
+        "name": "cgpa",
+        "data_type": "Numeric",
+        "x": 50,
+        "y": 10
+      },
+      "type": "def",
+      "direct_type": "Directed",
+      "beta": 0.63
+    },
+    {
+      "source": {
+        "id": "latent2",
+        "name": "aptitude",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 440
+      },
+      "target": {
+        "id": "latent1",
+        "name": "acad_skill",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 90
+      },
+      "type": "reg",
+      "direct_type": "Directed",
+      "beta": 0.59
+    },
+    {
+      "source": {
+        "id": "latent1",
+        "name": "acad_skill",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 90
+      },
+      "target": {
+        "id": "obsrvd7",
+        "name": "admit",
+        "data_type": "Numeric",
+        "x": 600,
+        "y": 250
+      },
+      "type": "reg",
+      "direct_type": "Directed",
+      "beta": 0.89
+    },
+    {
+      "source": {
+        "id": "latent2",
+        "name": "aptitude",
+        "data_type": "Latent",
+        "x": 250,
+        "y": 440
+      },
+      "target": {
+        "id": "obsrvd7",
+        "name": "admit",
+        "data_type": "Numeric",
+        "x": 600,
+        "y": 250
+      },
+      "type": "reg",
+      "direct_type": "Directed",
+      "beta": 0.7
+    }
+  ],
+  "coeffs": {
+    "cgpa": 0.5165749361904566,
+    "gre": 0.15180722146387393,
+    "lor": 0.11654401885862375,
+    "research": 0.08758618489571912,
+    "sop": 0.029565573369714215,
+    "toefl": 0.12485851649847612
+  }
+}

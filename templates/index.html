@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+{% block content %}
+
+  <!-- main banner/jumbotron start-->
+  <div class="jumbotron">
+      <div class="container">
+        <h1 class="display-3">Time to tell your story!</h1>
+        <p>This is a platform to tell story from data. We will use causal model to learn relations from your data.</p>
+        <!-- <p class="lead">
+          <a class="btn btn-primary btn-lg" href="{{url_for('causality', model_id='none', user='none', case='-1')}}" role="button">Try Causality!</a>
+        </p> -->
+        <p class="lead">
+          <a class="btn btn-primary btn-lg" href="{{url_for('county_model')}}" role="button">Try Causality!</a>
+        </p>
+      </div>
+  </div>
+  <!-- main banner/jumborton ends -->
+  <div class="container">  
+    <div class="row">
+         <div class="col-sm-4 col-md-4">
+             <div class="post">
+                 <div class="post-img-content">
+                     <a href="{{url_for('story_list', category='State')}}"><img src="http://placehold.it/460x250/e67e22/ffffff&text=HTML5" class="img-responsive" /></a>
+                     <span class="post-title"><b>State level data thread</b><br />
+                         <!-- <b>CSS3 Blur</b></span> -->
+                 </div>
+                 <div class="content">
+                     <!-- <div class="author">
+                         By <b>Bhaumik</b> |
+                         <time datetime="2014-01-20">January 20th, 2014</time>
+                     </div> -->
+                         Explore the stories on state level data.
+
+                 </div>
+             </div>
+         </div>
+         <div class="col-sm-4 col-md-4">
+             <div class="post">
+                 <div class="post-img-content">
+                     <a href="#"><img src="http://placehold.it/460x250/2980b9/ffffff&text=CSS3" class="img-responsive" /></a>
+                     <span class="post-title"><b>County level data thread</b><br />
+                         <!-- <b>CSS3 Blur</b></span> -->
+                 </div>
+                 <div class="content">
+                     <!-- <div class="author">
+                         By <b>Bhaumik</b> |
+                         <time datetime="2014-01-20">January 20th, 2014</time>
+                     </div> -->
+                     
+                       Explore the stories on county level data.  
+                     
+                     
+                 </div>
+             </div>
+         </div>
+         <div class="col-sm-4 col-md-4">
+             <div class="post">
+                 <div class="post-img-content">
+                     <a href="#"><img src="http://placehold.it/460x250/47A447/ffffff&text=jQuery" class="img-responsive" /></a>
+                     <span class="post-title"><b>National level data thread</b><br />
+                         <!-- <b>CSS3 Blur</b></span> -->
+                 </div>
+                 <div class="content">
+                     <!-- <div class="author">
+                         By <b>Bhaumik</b> |
+                         <time datetime="2014-01-20">January 20th, 2014</time>
+                     </div> -->
+                     Explore the stories on national level data. 
+                     
+                 </div>
+             </div>
+         </div>
+
+         <div class="col-sm-4 col-md-4">
+             <div class="post">
+                 <div class="post-img-content">
+                     <a href="{{url_for('story_list', category='Other')}}"><img src="http://placehold.it/460x250/47A447/ffffff&text=jQuery" class="img-responsive" /></a>
+                     <span class="post-title"><b>Other data thread</b><br />
+                         <!-- <b>CSS3 Blur</b></span> -->
+                 </div>
+                 <div class="content">
+                     <!-- <div class="author">
+                         By <b>Bhaumik</b> |
+                         <time datetime="2014-01-20">January 20th, 2014</time>
+                     </div> -->
+                     Explore the stories on diverse datasets. 
+                     
+                 </div>
+             </div>
+         </div>
+     </div>
+  </div>
+    
+{% endblock content %}
