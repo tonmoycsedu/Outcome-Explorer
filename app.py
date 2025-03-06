@@ -1,9 +1,6 @@
 from flask import Flask, render_template, url_for, request, jsonify, flash,redirect, session
-# from flask_pymongo import PyMongo
 import pandas as pd
 from io import StringIO
-# from utility import *
-# from forms import RegistrationForm,LoginForm
 import json
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
@@ -13,30 +10,38 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
 from sklearn.mixture import GaussianMixture
 
-# import pycausal_jun as pc
 from joblib import dump, load
-# from semopy import Model
-# from semopy import stats
-# from factor_analyzer import FactorAnalyzer
+from semopy import Model
+from semopy import stats
 
-global df;
+# global variables
+global df, target, loc;
 df = None;
-
+target = None
+loc = None
 
 app = Flask(__name__)
-# app.config["MONGO_URI"] = "mongodb://localhost:27017/causality"
 app.config["SECRET_KEY"] = '80e2229aa326ca04ee982aa63b9b0f13'
-# mongo = PyMongo(app)
-# loc = "./static/csv/SAT_data_renamed.csv"
-loc = "./static/csv/boston_housing.csv"
-target = "MED_PRICE"
-# loc = "./static/csv/diabetes1.csv"
-# target = "hasDiabetes"
 
-###default route, home page
+#default route, reroutes to create_model page
 @app.route("/")   
 def home():
-	return render_template("index.html",title = "Home")
+	return render_template("create_model.html",title = "Home")
+
+#create model
+@app.route("/create_model")   
+def create_model():
+	return render_template("create_model.html",title = "Create Model")
+
+###default route, home page
+@app.route("/explain_model/<l>/<t>", methods=['POST', 'GET'])   
+def explain_model(l, t):
+	global loc
+	global target
+	loc = "./static/csv/"+ l
+	target = t
+	data = pd.read_csv(loc)
+	return render_template("explain_model.html", title = "Interpret Model", attrs= data.columns.tolist())
 
 @app.route("/save_dag",methods=['POST'])   
 def save_dag():
@@ -84,10 +89,6 @@ def read_csv():
 		# session['data'] = df.copy()
 		return jsonify(msg="success",attributes=list(df.columns))
 
-###create model
-@app.route("/create_model")   
-def create_model():
-	return render_template("create_model.html",title = "Create Model")
 
 @app.route("/save_model", methods=['POST'])
 def save_model():
@@ -97,12 +98,7 @@ def save_model():
 		json.dump(mod, fp,indent=4)
 	return jsonify(msg="success")
 
-###default route, home page
-@app.route("/explain_model")   
-def explain_model():
-	data = pd.read_csv(loc)
-	print(data.columns)
-	return render_template("explain_model.html",title = "Interpret Model", attrs= data.columns.tolist())
+
 
 @app.route("/baseline")   
 def baseline():
@@ -163,7 +159,7 @@ def sem_fit():
 	std = df[target].std()
 	for ind,row in df_scaled.tail(100).iterrows():
 		su = 0
-		for k,v in row[features].iteritems():
+		for k,v in row[features].items():
 		    # print(k,v)
 		    su += v*d[k]
 		pred.append(su*std+m)

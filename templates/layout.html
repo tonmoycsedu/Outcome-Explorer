@@ -31,19 +31,6 @@
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 	  	</button>
-	  	<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            {% if title == 'Create Model' %}
-    		    <div class="navbar-nav">
-    		      <a class="nav-item nav-link active" href="{{url_for('create_model')}}">Create Model <span class="sr-only">(current)</span></a>
-    		      <a class="nav-item nav-link" href="{{url_for('explain_model')}}">Interpret Model</a>     
-    		    </div>
-            {% else %}
-                <div class="navbar-nav">
-                  <a class="nav-item nav-link" href="{{url_for('create_model')}}">Create Model <span class="sr-only">(current)</span></a>
-                  <a class="nav-item nav-link active" href="{{url_for('explain_model')}}">Interpret Model</a>     
-                </div>
-            {% endif %}
-	  	</div>
 	</nav>
 	<!-- Nav bar end -->
 	
