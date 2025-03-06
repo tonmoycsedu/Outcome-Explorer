@@ -69,7 +69,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": 0.25496196744848254
         },
         {
             "source": {
@@ -83,7 +84,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": -0.3093502514583307
         },
         {
             "source": {
@@ -97,7 +99,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": 0.3802893664220409
         },
         {
             "source": {
@@ -111,7 +114,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": 0.3462250544373811
         },
         {
             "source": {
@@ -125,7 +129,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": -0.4377333069175227
         },
         {
             "source": {
@@ -139,7 +144,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": 0.1792712273836416
         },
         {
             "source": {
@@ -153,7 +159,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": 0.13658272627075846
         },
         {
             "source": {
@@ -167,7 +174,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": 0.7494235405970514
         },
         {
             "source": {
@@ -181,7 +189,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": 0.2763812142915189
         },
         {
             "source": {
@@ -195,7 +204,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": 0.3448785328027584
         },
         {
             "source": {
@@ -209,7 +219,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": -0.05652884034911619
         },
         {
             "source": {
@@ -223,7 +234,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": -0.019475472675658134
         },
         {
             "source": {
@@ -237,7 +249,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": -0.21120546197781015
         },
         {
             "source": {
@@ -251,7 +264,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": -0.40692527560302855
         },
         {
             "source": {
@@ -265,7 +279,8 @@
                 "data_type": "Numeric"
             },
             "type": "def",
-            "direct_type": "Directed"
+            "direct_type": "Directed",
+            "beta": 0.5951259089802291
         }
     ],
     "coeffs": {

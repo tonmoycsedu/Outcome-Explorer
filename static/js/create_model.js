@@ -3,7 +3,7 @@ var mode = "";
 var pathSVG,contentSVG,searchSVG,graphviz, dragLine, tooltip, tooltipLatent, selected, selected_id,target_attr;
 var coeffs;
 var rectangles = 0, ellipses = 0;
-var nodes = {}, model = [];
+var nodes = [], model = [];
 var edges = [],dot_string;
 
 $(document).ready(function(){ //// initialize page
@@ -58,7 +58,14 @@ $(document).ready(function(){ //// initialize page
 
 })
 
-// function to read file and render the graph
+// get started with the analysis
+$("#get_started_button").on("click", function(){
+    $('#get_started_modal')
+        .modal('show')
+    ;
+})
+
+// function to load dataset
 $('#file-upload').on('change', function(e) {
 	//check file length
  	if (!e.target.files.length) return;  
@@ -73,14 +80,11 @@ $('#file-upload').on('change', function(e) {
 		// read csv data          
     	var reader = new FileReader();
         reader.readAsText(file);   
-
         //send csv data to server using ajax
         reader.onload = function(event) {
-        	//console.log(reader.result)
     	  	$.ajax({
 	            url: '/read_csv',
 	            data: JSON.stringify({content:reader.result,name:data_name}),
-	            //contentType: JSON,
 	            type: 'POST',
 	            success: function(res) {
 	            	// console.log(res)
@@ -100,9 +104,7 @@ $('#file-upload').on('change', function(e) {
 	            		$(".search_opt").show()
 	            		$("#src_list").append("<option val="+d+">"+d+"</option>")
 	            		$("#target_list").append("<option val="+d+">"+d+"</option>")
-
-	            	})
-	                		                   
+	            	})   		                   
 	            },
 	            //error function for first ajax call
 	            error: function(error) {
@@ -112,6 +114,122 @@ $('#file-upload').on('change', function(e) {
         }
     }
 });
+
+// function to load causal structure
+$("#causal_structure").on("change", function(e){
+	console.log(e.target.files)
+	if (!e.target.files.length) return;  
+
+    var file = e.target.files[0];
+    data_name = file.name;
+
+    var ext = data_name.split('.').pop();
+    if (ext != "txt") {
+        file_error("File format error");
+    } else {
+		// read txt data          
+    	var reader = new FileReader();
+        reader.readAsText(file);   
+
+        //send dag data to server using ajax
+        reader.onload = function(event) {
+			$.ajax({
+				url: '/upload_dag',
+				data: JSON.stringify({content:reader.result}),
+				type: 'POST',
+				success: function(res) {
+					console.log(res)
+					edges = res.edges;
+					dot_string = res.dot_string;
+					graphviz.fit("truthy")
+					graphviz
+						.renderDot(res.dot_str)
+											
+				},
+				error: function(error) { //error function for first ajax call
+					console.log(error);
+				}
+			});
+		}
+	}
+})
+
+// parameterize model
+function update_model(mod = null){
+	if(!mod) var parsed_model = parse_model(edges)
+	else var parsed_model = mod;
+	console.log(parsed_model)
+	$.ajax({
+        url: '/sem_fit',
+        data: JSON.stringify({model:parsed_model,target:target_attr}),
+        //contentType: JSON,
+        type: 'POST',
+        success: function(res) {
+        	console.log(res, nodes, model);
+			var rectangles = 0;
+			for (let key in res.fit) {
+				var line = res.fit[key]
+				console.log(line)
+				if(line['op'] == "~"){
+
+					if(!(line['lval'] in nodes)) {
+						nodes[line['lval']] = {"id":rectangles,"name":line['lval'],"data_type":"Numeric"}
+						rectangles += 1
+					}
+					if(!(line['rval'] in nodes)) {
+						nodes[line['rval']] = {"id":rectangles,"name":line['rval'],"data_type":"Numeric"}
+						rectangles += 1
+					}
+					model.push({"source":nodes[line['rval']],"target":nodes[line['lval']],
+						"type":"def", "direct_type": "Directed", "beta": line['Estimate']})
+				}
+			}
+			console.log(res, nodes, model);
+        	$("#define_model").val(parsed_model)
+        	var fit = Object.values(res.fit)
+        	print_estimates(fit)
+        	print_fit_indices(res.measures)
+        	plot_line_chart(res.prediction)
+        	coeffs = res.coeffs;
+        	// create_model_for_export(res.coeffs)
+            		                   
+        },
+        error: function(error) { //error function for first ajax call
+            console.log(error);
+        }
+    });
+}
+// open modal for saving model
+$("#save_model").on("click", function(){
+    $('#save_model_modal')
+        .modal('show')
+    ;
+})
+
+// save model
+$("#final_save").on("click",function(){
+	
+	var saved_model = {}
+	saved_model['nodes'] = Object.values(nodes)
+	saved_model['links'] = model
+	saved_model['coeffs'] = coeffs;
+	var filename = $("#save_file_name").val()
+	$.ajax({
+        url: '/save_model',
+        data: JSON.stringify({model:saved_model, filename: filename}),
+        //contentType: JSON,
+        type: 'POST',
+        success: function(res) {
+        	console.log(res)   
+        	alert("save successful")        
+        },
+        error: function(error) { //error function for first ajax call
+            console.log(error);
+        }
+    });
+
+})
+
 
 $(".sem_controls").on("click",function(){
 	console.log($(this).attr("name"))
@@ -287,33 +405,6 @@ function find_edge_index(src,target){
 	return ind;
 
 }
-
-function update_model(mod = null){
-	if(!mod) var parsed_model = parse_model(edges)
-	else var parsed_model = mod;
-	console.log(parsed_model)
-	$.ajax({
-        url: '/sem_fit',
-        data: JSON.stringify({model:parsed_model,target:target_attr}),
-        //contentType: JSON,
-        type: 'POST',
-        success: function(res) {
-        	console.log(res)
-        	console.log(nodes)
-        	$("#define_model").val(parsed_model)
-        	var fit = Object.values(res.fit)
-        	print_estimates(fit)
-        	print_fit_indices(res.measures)
-        	plot_line_chart(res.prediction)
-        	coeffs = res.coeffs;
-        	// create_model_for_export(res.coeffs)
-            		                   
-        },
-        error: function(error) { //error function for first ajax call
-            console.log(error);
-        }
-    });
-}
 function print_fit_indices(measures){
 	html=""
 	html += "<p class='fit_indices'> Chi-Square Value:&nbsp;"+ parseFloat(measures['chi2'][0]).toFixed(4)+"</p>"
@@ -442,44 +533,6 @@ $("body").on("click",".attr_list",function(){
 	target_attr = $(this).html()
 	console.log(target_attr)
 })
-
-$("#causal_structure").on("change", function(e){
-	console.log(e.target.files)
-	if (!e.target.files.length) return;  
-
-    var file = e.target.files[0];
-    data_name = file.name;
-
-    var ext = data_name.split('.').pop();
-    if (ext != "txt") {
-        file_error("File format error");
-    } else {
-		// read txt data          
-    	var reader = new FileReader();
-        reader.readAsText(file);   
-
-        //send dag data to server using ajax
-        reader.onload = function(event) {
-			$.ajax({
-				url: '/upload_dag',
-				data: JSON.stringify({content:reader.result}),
-				type: 'POST',
-				success: function(res) {
-					console.log(res)
-					edges = res.edges;
-					dot_string = res.dot_string;
-					graphviz.fit("truthy")
-					graphviz
-						.renderDot(res.dot_str)
-											
-				},
-				error: function(error) { //error function for first ajax call
-					console.log(error);
-				}
-			});
-		}
-	}
-})
 function circular(_nodes,w=600,h=300) {
 	search_nodes = {}
     if (!_nodes || _nodes.length == 0) return;
@@ -498,35 +551,6 @@ function circular(_nodes,w=600,h=300) {
     console.log(search_nodes)
     return search_nodes
 }
-
-$("#save_model").on("click", function(){
-    $('#save_model_modal')
-        .modal('show')
-    ;
-})
-
-$("#final_save").on("click",function(){
-	
-	var saved_model = {}
-	saved_model['nodes'] = Object.values(nodes)
-	saved_model['links'] = model
-	saved_model['coeffs'] = coeffs;
-	var filename = $("#save_file_name").val()
-	$.ajax({
-        url: '/save_model',
-        data: JSON.stringify({model:saved_model, filename: filename}),
-        //contentType: JSON,
-        type: 'POST',
-        success: function(res) {
-        	console.log(res)   
-        	alert("save successful")        
-        },
-        error: function(error) { //error function for first ajax call
-            console.log(error);
-        }
-    });
-
-})
 
 //////////////////////////////////* SVG object Dragging Events*//////////////////////////////////
 
@@ -711,12 +735,6 @@ function create_text(x,y,text,fill="grey"){
 }
 
 /////////////////////////////////////* EFA Functions*//////////////////////////////////////
-
-$("#get_started_button").on("click", function(){
-    $('#get_started_modal')
-        .modal('show')
-    ;
-})
 
 $("#run_efa").on("click", function(){
 	var efa_variables=[];
