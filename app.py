@@ -16,10 +16,11 @@ from semopy import stats
 import pydot
 
 # global variables
-global df, target, loc;
-df = None;
+global df, target, loc, pdag_loc
+df = None
 target = None
 loc = None
+pdag_loc = None
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = '80e2229aa326ca04ee982aa63b9b0f13'
@@ -39,8 +40,10 @@ def create_model():
 def explain_model(data_file, target_variable, dag_file):
 	global loc
 	global target
-	loc = "./static/csv/"+ data_file + ".csv"
+	global pdag_loc
+	loc = "./static/data/"+ data_file + ".csv"
 	target = target_variable
+	pdag_loc = './static/data/'+dag_file+'.json'
 	data = pd.read_csv(loc)
 	return render_template("explain_model.html", title = "Interpret Model", attrs= data.columns.tolist())
 
@@ -151,6 +154,7 @@ def see_model():
 		global df
 		global loc
 		global target
+		global pdag_loc
 		json_data = request.get_json(force=True);		
 		attrs = json_data['attrs']
 		target = json_data['target']
@@ -162,13 +166,13 @@ def see_model():
 		data= data[attrs]
 		scaler = StandardScaler()
 
-		# gmm = GaussianMixture(n_components = 4)
-		# gmm.fit(scaler.fit_transform(data))
-		# # print(gmm.means_)
-		# dump(gmm, './static/models/mixture_model_all.joblib')
+		gmm = GaussianMixture(n_components = 2, covariance_type='full', reg_covar=1e-2, random_state=42)
+		gmm.fit(scaler.fit_transform(data))
+		# print(gmm.means_)
+		dump(gmm, './static/data/mixture_model_all.joblib')
 
 		if('pdag_load' in json_data):
-			with open('./static/data/boston.json') as f:
+			with open(pdag_loc) as f:
 				pdag = json.load(f)
 				# pdag = json.dumps(pdag).to_json()
 
@@ -302,31 +306,21 @@ def get_efadetails():
 @app.route("/feasibility",methods=['POST'])
 def feasibility():
 	if request.method == 'POST':
-		json_data = request.get_json(force=True);
-		row = dict(json_data['row'])
+		json_data = request.get_json(force=True)
+		row = json_data['row']
 		row1 = json_data['row1']
 		category = int(json_data['category'])
-		# print(row.values(),row.keys())
+		model = load('./static/data/mixture_model_all.joblib') 
+
 		df = pd.DataFrame([row.values()], columns= row.keys())
-		
-		model = load('./static/models/mixture_model_all.joblib') 
-		
 		probs = model.predict_proba(df)
-		# print(probs)
+		print(probs)
 		if(row1 != -1):
-			row1 = dict(json_data['row1'])
 			df1 = pd.DataFrame([row1.values()], columns= row1.keys())
 			probs1 = model.predict_proba(df1)
-			# print(probs1)
-			# print(df.values,df1.values,model.means_)
-			if( category == 4):
-				return jsonify(val=np.max(probs),val1=np.max(probs1))
-			else:
-				return jsonify(val=probs[0][category],val1=probs1[0][category])
-		if( category == 4):
-			return jsonify(val=np.max(probs))
-		else:
-			return jsonify(val=probs[0][category])
+			return jsonify(val=np.max(probs),val1=np.max(probs1))
+		
+		return jsonify(val = np.max(probs))
 		
 @app.route("/get_row",methods=['POST'])
 def get_row():

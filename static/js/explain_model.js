@@ -616,6 +616,8 @@ function feasibility_score(){
     // console.log(knob_values,node_values,compare_node_values,compare_knob_values)
     if(isProbed)
         row1 = copy_object(compare_node_values)
+
+    console.log("feasibility:", node_values, row1, school_category)
     $.ajax({
         url: '/feasibility',
         data: JSON.stringify({row:node_values,row1:row1,category:school_category}),
